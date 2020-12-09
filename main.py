@@ -2,65 +2,134 @@ import kivymd
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.screen import Screen
 from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFillRoundFlatIconButton, MDFloatingRootButton
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.list import MDList, IconLeftWidget, OneLineIconListItem
 from kivy.uix.scrollview import ScrollView
-from structure import name_feild, about_list, age_feild, email_feild, password_feild
+from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.properties import ObjectProperty
 
 
-class main_app(MDApp):
-    def build(self):
-        screen = Screen()
-        self.theme_cls.primary_palette = 'Green'
-        self.theme_cls.primary_hue = "A200"
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.font_styles["JetBrainsMono"] = ["mono"]
+main = """
+ScreenManager:
+    MenuScreen:
+    ProfileScreen:
 
-        self.builder_1 = Builder.load_string(name_feild)
-        self.builder_2 = Builder.load_string(age_feild)
-        self.builder_3 = Builder.load_string(email_feild)
-        self.builder_4 = Builder.load_string(password_feild)
+<MenuScreen>:
+    name : 'login'
+    name_field : name_field
+    age_field : age_field
 
-        button = MDFillRoundFlatIconButton(text="Create Account", icon="plus", pos_hint={'center_x': 0.5, 'center_y': 0.1}, on_release=self.get_data)
-        screen.add_widget(button)
+    MDTextField:
+        id : name_field
+        pos_hint:{"center_x":0.5 , "center_y":0.9}
+        hint_text:"Enter Username"
+        size_hint_x: None
+        width: 250
+        helper_text:"Minimum 5 Characters"
+        helper_text_mode: "on_focus"
+        icon_right: "account"
+        icon_right_color: app.theme_cls.primary_color
 
-        screen.add_widget(self.builder_1)
-        screen.add_widget(self.builder_2)
-        screen.add_widget(self.builder_3)
-        screen.add_widget(self.builder_4)
+    MDTextField:
+        id : age_field
+        pos_hint:{"center_x":0.5 , "center_y":0.7}
+        hint_text:"Enter Age"
+        size_hint_x: None
+        width: 250
+        helper_text:"Only 8-15 Years"
+        helper_text_mode: "on_focus"
+        icon_right: "calendar"
+        icon_right_color: app.theme_cls.primary_color
 
-        """
-        info_list = Builder.load_string(about_list)
-        screen.add_widget(info_list)
-        icon = IconLeftWidget(icon="calendar", theme_text_color="Custom", text_color=(75/255, 250/255, 197/255, 1))
-        icon2 = IconLeftWidget(icon="calendar", theme_text_color="Custom", text_color=(75/255, 250/255, 197/255, 1))
-        info_list.ids.container_1.add_widget(icon)
-        info_list.ids.container_2.add_widget(icon2)"""
+    MDTextField:
+        pos_hint:{"center_x":0.5 , "center_y":0.5}
+        hint_text:"Enter Email ID"
+        size_hint_x: None
+        width: 250
+        icon_right: "email"
+        icon_right_color: app.theme_cls.primary_color
 
-        return screen
+    MDTextField:
+        pos_hint:{"center_x":0.5 , "center_y":0.3}
+        hint_text:"Enter Password"
+        size_hint_x: None
+        width: 250
+        icon_right: "fingerprint"
+        icon_right_color: app.theme_cls.primary_color
 
-    def get_data(self, obj):
+    MDFillRoundFlatIconButton:
+        text:"Create Account" 
+        icon:"plus" 
+        pos_hint:{'center_x': 0.5, 'center_y': 0.1} 
+        on_press : root.get_data()
+
+<ProfileScreen>:
+    name:'profile'
+    MDLabel:
+        text:"Hello"
+
+"""
+#root.manager.current = 'profile'
+
+
+
+class MenuScreen(Screen):
+
+    name_field = ObjectProperty(None)
+    age_field = ObjectProperty(None)
+
+    def get_data(self):
+        ages = ['8', '9', '10', '11', '12', '13', '14', '15']
+        name_field = self.name_field.text
+        age_field = self.age_field.text
         text = ""
 
-        if self.builder_1.text == "" or len(self.builder_1.text) < 5:
-            self.builder_1.text = "NA"
-            text = "Invalid Username"
+        if name_field == "" or len(name_field) < 5 or age_field not in ages:
+            name_field = "NA"
+            text = "Invalid Invalid"
             title = "Account Not Created"
+
         else:
-            text = f"Account Created With Username : {self.builder.text}"
+            text = f"Account Created With Username : {name_field}"
             title = "Account Created Sucessfully"
 
         close_btn = MDRectangleFlatButton(
             text="Ok", on_release=self.close_dialog)
 
-        self.dailog = MDDialog(title=title, text=text, size_hint_x=0.9, buttons=[close_btn])
-        self.builder_1.text = ""
+        self.dailog = MDDialog(title=title, text=text,
+                               size_hint_x=0.9, buttons=[close_btn])
+
         self.dailog.open()
 
     def close_dialog(self, obj):
+        self.name_field.text = ""
+        self.age_field.text = ""
         self.dailog.dismiss()
+        sm.current = 'profile'
+
+
+class ProfileScreen(Screen):
+    pass
+
+
+sm = ScreenManager()
+sm.add_widget(MenuScreen(name='login'))
+sm.add_widget(ProfileScreen(name='profile'))
+
+
+class main_app(MDApp):
+    def build(self):
+
+        self.theme_cls.primary_palette = 'Green'
+        self.theme_cls.primary_hue = "A200"
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.font_styles["JetBrainsMono"] = ["mono"]
+
+        screen = Builder.load_string(main)
+
+        return screen
+
 
 
 main_app().run()
