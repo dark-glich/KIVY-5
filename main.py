@@ -7,8 +7,7 @@ from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFillRo
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.list import MDList, IconLeftWidget, OneLineIconListItem
 from kivy.uix.scrollview import ScrollView
-from structure import name_feild
-from structure import about_list 
+from structure import name_feild, about_list, age_feild, email_feild, password_feild
 
 
 class main_app(MDApp):
@@ -19,28 +18,34 @@ class main_app(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.font_styles["JetBrainsMono"] = ["mono"]
 
-        self.builder = Builder.load_string(name_feild)
-        info_list = Builder.load_string(about_list)
+        self.builder_1 = Builder.load_string(name_feild)
+        self.builder_2 = Builder.load_string(age_feild)
+        self.builder_3 = Builder.load_string(email_feild)
+        self.builder_4 = Builder.load_string(password_feild)
 
-        button = MDFillRoundFlatIconButton(text="Create Account", icon="plus", pos_hint={'center_x': 0.5, 'center_y': 0.2}, on_release=self.get_data)
+        button = MDFillRoundFlatIconButton(text="Create Account", icon="plus", pos_hint={'center_x': 0.5, 'center_y': 0.1}, on_release=self.get_data)
         screen.add_widget(button)
 
-        screen.add_widget(self.builder)
-        screen.add_widget(info_list)
+        screen.add_widget(self.builder_1)
+        screen.add_widget(self.builder_2)
+        screen.add_widget(self.builder_3)
+        screen.add_widget(self.builder_4)
 
-        
+        """
+        info_list = Builder.load_string(about_list)
+        screen.add_widget(info_list)
         icon = IconLeftWidget(icon="calendar", theme_text_color="Custom", text_color=(75/255, 250/255, 197/255, 1))
         icon2 = IconLeftWidget(icon="calendar", theme_text_color="Custom", text_color=(75/255, 250/255, 197/255, 1))
         info_list.ids.container_1.add_widget(icon)
-        info_list.ids.container_2.add_widget(icon2)
+        info_list.ids.container_2.add_widget(icon2)"""
 
         return screen
 
     def get_data(self, obj):
         text = ""
 
-        if self.builder.text == "" or len(self.builder.text) < 5:
-            self.builder.text = "NA"
+        if self.builder_1.text == "" or len(self.builder_1.text) < 5:
+            self.builder_1.text = "NA"
             text = "Invalid Username"
             title = "Account Not Created"
         else:
@@ -50,8 +55,8 @@ class main_app(MDApp):
         close_btn = MDRectangleFlatButton(
             text="Ok", on_release=self.close_dialog)
 
-        self.dailog = MDDialog(title=title, text=text, size_hint_x=0.8, buttons=[close_btn])
-        self.builder.text = ""
+        self.dailog = MDDialog(title=title, text=text, size_hint_x=0.9, buttons=[close_btn])
+        self.builder_1.text = ""
         self.dailog.open()
 
     def close_dialog(self, obj):
