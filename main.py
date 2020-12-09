@@ -10,71 +10,12 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
 
 
-main = """
-ScreenManager:
-    MenuScreen:
-    ProfileScreen:
-
-<MenuScreen>:
-    name : 'login'
-    name_field : name_field
-    age_field : age_field
-
-    MDTextField:
-        id : name_field
-        pos_hint:{"center_x":0.5 , "center_y":0.9}
-        hint_text:"Enter Username"
-        size_hint_x: None
-        width: 250
-        helper_text:"Minimum 5 Characters"
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        icon_right_color: app.theme_cls.primary_color
-
-    MDTextField:
-        id : age_field
-        pos_hint:{"center_x":0.5 , "center_y":0.7}
-        hint_text:"Enter Age"
-        size_hint_x: None
-        width: 250
-        helper_text:"Only 8-15 Years"
-        helper_text_mode: "on_focus"
-        icon_right: "calendar"
-        icon_right_color: app.theme_cls.primary_color
-
-    MDTextField:
-        pos_hint:{"center_x":0.5 , "center_y":0.5}
-        hint_text:"Enter Email ID"
-        size_hint_x: None
-        width: 250
-        icon_right: "email"
-        icon_right_color: app.theme_cls.primary_color
-
-    MDTextField:
-        pos_hint:{"center_x":0.5 , "center_y":0.3}
-        hint_text:"Enter Password"
-        size_hint_x: None
-        width: 250
-        icon_right: "fingerprint"
-        icon_right_color: app.theme_cls.primary_color
-
-    MDFillRoundFlatIconButton:
-        text:"Create Account" 
-        icon:"plus" 
-        pos_hint:{'center_x': 0.5, 'center_y': 0.1} 
-        on_press : root.get_data()
-
-<ProfileScreen>:
-    name:'profile'
-    MDLabel:
-        text:"Hello"
-
-"""
-#root.manager.current = 'profile'
-
+Builder.load_file("structure.kv")
 
 
 class MenuScreen(Screen):
+
+    screen = ''
 
     name_field = ObjectProperty(None)
     age_field = ObjectProperty(None)
@@ -89,10 +30,12 @@ class MenuScreen(Screen):
             name_field = "NA"
             text = "Invalid Invalid"
             title = "Account Not Created"
+            self.screen = 'no'
 
         else:
             text = f"Account Created With Username : {name_field}"
             title = "Account Created Sucessfully"
+            self.screen = 'change'
 
         close_btn = MDRectangleFlatButton(
             text="Ok", on_release=self.close_dialog)
@@ -106,30 +49,25 @@ class MenuScreen(Screen):
         self.name_field.text = ""
         self.age_field.text = ""
         self.dailog.dismiss()
-        sm.current = 'profile'
+        if self.screen == 'change':
+            main_app.sm.current = 'profile'
 
 
 class ProfileScreen(Screen):
     pass
 
 
-sm = ScreenManager()
-sm.add_widget(MenuScreen(name='login'))
-sm.add_widget(ProfileScreen(name='profile'))
-
-
 class main_app(MDApp):
+    sm = ScreenManager()
     def build(self):
 
         self.theme_cls.primary_palette = 'Green'
         self.theme_cls.primary_hue = "A200"
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.font_styles["JetBrainsMono"] = ["mono"]
-
-        screen = Builder.load_string(main)
-
-        return screen
-
+        self.sm.add_widget(MenuScreen(name='login'))
+        self.sm.add_widget(ProfileScreen(name='profile'))
+        return self.sm
 
 
 main_app().run()
