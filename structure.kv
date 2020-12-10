@@ -2,6 +2,7 @@
     name : 'login'
     name_field : name_field
     age_field : age_field
+    email_field : email_field 
 
     MDTextField:
         id : name_field
@@ -19,16 +20,19 @@
         pos_hint:{"center_x":0.5 , "center_y":0.7}
         hint_text:"Enter Age"
         size_hint_x: None
+        max_text_length : 2
         width: 250
-        helper_text:"Only 8-15 Years"
+        helper_text:"              between 8-28 Years"
         helper_text_mode: "on_focus"
         icon_right: "calendar"
         icon_right_color: app.theme_cls.primary_color
 
     MDTextField:
+        id : email_field 
         pos_hint:{"center_x":0.5 , "center_y":0.5}
         hint_text:"Enter Email ID"
         size_hint_x: None
+        multiline: True
         width: 250
         icon_right: "email"
         icon_right_color: app.theme_cls.primary_color
@@ -38,16 +42,46 @@
         hint_text:"Enter Password"
         size_hint_x: None
         width: 250
+        helper_text:"At least 8 characters"
+        helper_text_mode: "on_focus"
         icon_right: "fingerprint"
         icon_right_color: app.theme_cls.primary_color
 
     MDFillRoundFlatIconButton:
-        text:"Create Account" 
+        text:"SignUp" 
         icon:"plus" 
-        pos_hint:{'center_x': 0.5, 'center_y': 0.1} 
+        pos_hint:{'center_x': 0.25, 'center_y': 0.1} 
         on_press : root.get_data()
+
+    MDRoundFlatButton:
+        text:"Guest account" 
+        
+        pos_hint:{'center_x': 0.7, 'center_y': 0.1} 
+        on_press : root.guest()
+
 
 <ProfileScreen>:
     name:'profile'
-    MDLabel:
-        text:"Hello"
+    play_audio : play_audio
+    Screen:
+        MDTextField:
+            id : play_audio
+            pos_hint:{"center_x":0.5 , "center_y":0.5}
+            hint_text:"Enter text"
+            size_hint_x: None
+            width: 300
+            multiline: True
+            icon_right: "star"
+            icon_right_color: app.theme_cls.primary_color
+
+        MDFloatingActionButton:
+            icon: "plus"
+            pos_hint:{"center_x":0.85 , "center_y":0.9}
+            md_bg_color: app.theme_cls.primary_color
+
+        MDBottomAppBar:
+            MDToolbar:
+                left_action_items : [["menu", lambda x : app.make()]]
+                right_action_items : [["clock", lambda x : app.make()]]
+                icon : 'play'
+                on_action_button : root.play_sound()
