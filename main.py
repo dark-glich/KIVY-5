@@ -17,6 +17,9 @@ from emailcheck import check
 Builder.load_file("structure.kv")
 kivy.core.window.Window.size = (350,600)
 
+class settingScreen(Screen):
+    pass
+
 class MenuScreen(Screen):
 
     screen = ''
@@ -64,10 +67,33 @@ class MenuScreen(Screen):
 class ProfileScreen(Screen):
 
     play_audio = kivy.properties.ObjectProperty(None)
+    audio = ''
 
     def play_sound(self):
         play_audio = self.play_audio.text
         play(play_audio)
+        self.audio = 'recorded'
+
+    def open_dialog(self):
+
+        text = ''
+        title = '' 
+
+        if self.audio == 'recorded':
+            text = "With filename recording.mp3"
+            title='File Saved'
+        else:
+            title = "File Not Saved"
+            text = "Please Record The File First"
+
+        close_btn = MDRectangleFlatButton(text="Ok", on_release=self.close_dialog)
+
+        self.dailog = MDDialog(title=title, text=text,size_hint_x=0.9, buttons=[close_btn])
+
+        self.dailog.open()
+
+    def close_dialog(self, obj):
+        self.dailog.dismiss()
 
 class main_app(MDApp):
     sm = ScreenManager()
@@ -79,7 +105,9 @@ class main_app(MDApp):
         self.theme_cls.font_styles["JetBrainsMono"] = ["mono"]
         self.sm.add_widget(MenuScreen(name='login'))
         self.sm.add_widget(ProfileScreen(name='profile'))
+        self.sm.add_widget(settingScreen(name='setting'))
+
         return self.sm
     def make(self):
-        pass
+        self.sm.current = 'setting'
 main_app().run()

@@ -55,7 +55,6 @@
 
     MDRoundFlatButton:
         text:"Guest account" 
-        
         pos_hint:{'center_x': 0.7, 'center_y': 0.1} 
         on_press : root.guest()
 
@@ -75,13 +74,69 @@
             icon_right_color: app.theme_cls.primary_color
 
         MDFloatingActionButton:
-            icon: "plus"
+            icon: "arrow-right-bold-circle-outline"
             pos_hint:{"center_x":0.85 , "center_y":0.9}
             md_bg_color: app.theme_cls.primary_color
+            on_release : app.make()
 
         MDBottomAppBar:
             MDToolbar:
-                left_action_items : [["menu", lambda x : app.make()]]
-                right_action_items : [["clock", lambda x : app.make()]]
+                right_action_items : [["plus", lambda x : root.open_dialog()]]
                 icon : 'play'
                 on_action_button : root.play_sound()
+
+
+<settingScreen>:
+    Screen:
+        NavigationLayout:
+            ScreenManager:
+                Screen:
+                    BoxLayout:
+                        orientation:'vertical'
+                        MDBottomAppBar:
+                            MDToolbar:
+                                left_action_items : [["menu", lambda x : nav_drawer.toggle_nav_drawer()]]
+                                elevation: 30
+                        Widget:
+
+            MDNavigationDrawer:
+                id : nav_drawer
+                spacing : '8dp'
+                padding: '10dp'
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    Image:
+                        source: 'profile.gif'
+
+                    MDLabel:
+                        text: 'username'
+                        font_style: 'Subtitle1'
+                        size_hint_y : None
+                        height: self.texture_size[1]
+                        theme_text_color: "Custom"
+                        text_color: 82/255, 255/255, 189/255, 1
+
+                    MDLabel:
+                        text: 'username@gmail.com'
+                        font_style: 'Caption'
+                        size_hint_y : None
+                        height: self.texture_size[1]
+                        theme_text_color: "Custom"
+                        text_color:  82/255, 255/255, 189/255, 1
+
+                    ScrollView:
+                        spacing:'20dp'
+                        
+                        MDList:
+                            OneLineIconListItem:
+                                text : 'Upload'
+                                IconLeftWidget:
+                                    icon : 'circle'
+
+                            OneLineIconListItem:
+                                text : 'Upload'
+                                IconLeftWidget:
+                                    icon : 'circle'
+

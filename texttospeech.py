@@ -1,8 +1,6 @@
 import os
 from gtts import gTTS
 
-
-
 def play(txt):
     text = txt 
     if text == '':
@@ -10,9 +8,7 @@ def play(txt):
 
     tts = gTTS(text=f'{text}.\n')
 
-    tts.save('/home/mmohdbilal/KIVY/KIVY-5/data.mp3')
+    tts.save('recording.mp3')
 
-    file = "/home/mmohdbilal/KIVY/KIVY-5/data.mp3"
+    file = 'recording.mp3'
     os.system("mpg123 " + file)
-
-
