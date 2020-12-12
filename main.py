@@ -12,41 +12,45 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 from texttospeech import play
 from emailcheck import check
-
+from kivymd.uix.snackbar import Snackbar
 
 Builder.load_file("structure.kv")
 kivy.core.window.Window.size = (350,600)
 
 class settingScreen(Screen):
-    pass
+    name = kivy.properties.ObjectProperty(None)
+    email = kivy.properties.ObjectProperty(None)
+
 
 class MenuScreen(Screen):
 
     screen = ''
-    name_field = kivy.properties.ObjectProperty(None)
+    user = kivy.properties.ObjectProperty(None)
     age_field = kivy.properties.ObjectProperty(None)
     email_field = kivy.properties.ObjectProperty(None)
+    pass_field = kivy.properties.ObjectProperty(None)
 
     def get_data(self):
         ages = ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27','28']
-        name_field = self.name_field.text
+        name = self.user.text
         age_field = self.age_field.text
         email_field = self.email_field.text
+        pass_field = self.pass_field.text
         text = ""
 
-        if name_field == "" or len(name_field) < 5 or age_field not in ages or check(email_field) == False:
-            name_field = "NA"
+        if name == "" or len(name) < 5 or age_field not in ages or check(email_field) == False or len(pass_field) < 8:
+            
             text = "Invalid Invalid"
             title = "Account Not Created"
             self.screen = 'no'
 
         else:
-            text = f"Account Created With Username : {name_field}"
+            text = f"Account Created With Username : {name}"
             title = "Account Created Sucessfully"
             self.screen = 'change'
 
         close_btn = MDRectangleFlatButton(
-            text="Ok", on_release=self.close_dialog)
+            text="Ok", on_release=lambda x : self.close_dialog(name , email_field))
 
         self.dailog = MDDialog(title=title, text=text,
                                size_hint_x=0.9, buttons=[close_btn])
@@ -56,17 +60,24 @@ class MenuScreen(Screen):
     def guest(self):
         main_app.sm.current = 'profile'
 
-    def close_dialog(self, obj):
-        self.name_field.text = ""
+    def close_dialog(self, x, y):
+        settingScreen.name = x
+        settingScreen.email = y
+        print(settingScreen.name)
+        self.text = ""
+        self.user.text = ""
         self.age_field.text = ""
+        self.email_field.text = ""
+        self.password_field = ""
         self.dailog.dismiss()
         if self.screen == 'change':
+            settingScreen.name = "GuestName" 
             main_app.sm.current = 'profile'
-                 
     
 class ProfileScreen(Screen):
 
     play_audio = kivy.properties.ObjectProperty(None)
+
     audio = ''
 
     def play_sound(self):
@@ -95,6 +106,7 @@ class ProfileScreen(Screen):
     def close_dialog(self, obj):
         self.dailog.dismiss()
 
+
 class main_app(MDApp):
     sm = ScreenManager()
     def build(self):
@@ -108,6 +120,12 @@ class main_app(MDApp):
         self.sm.add_widget(settingScreen(name='setting'))
 
         return self.sm
-    def make(self):
-        self.sm.current = 'setting'
+    def change_dark(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_hue = "A200"
+
+    def change_light(self):
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_hue = "A200"
+
 main_app().run()

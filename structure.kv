@@ -1,11 +1,14 @@
+#:import Snackbar kivymd.uix.snackbar.Snackbar
+
 <MenuScreen>:
     name : 'login'
-    name_field : name_field
+    user : user
     age_field : age_field
     email_field : email_field 
+    pass_field : pass_field
 
     MDTextField:
-        id : name_field
+        id : user
         pos_hint:{"center_x":0.5 , "center_y":0.9}
         hint_text:"Enter Username"
         size_hint_x: None
@@ -38,6 +41,7 @@
         icon_right_color: app.theme_cls.primary_color
 
     MDTextField:
+        id : pass_field
         pos_hint:{"center_x":0.5 , "center_y":0.3}
         hint_text:"Enter Password"
         size_hint_x: None
@@ -56,7 +60,9 @@
     MDRoundFlatButton:
         text:"Guest account" 
         pos_hint:{'center_x': 0.7, 'center_y': 0.1} 
-        on_press : root.guest()
+        on_press : 
+            root.manager.transition.direction = 'left'
+            root.manager.current = 'profile'
 
 
 <ProfileScreen>:
@@ -73,21 +79,6 @@
             icon_right: "star"
             icon_right_color: app.theme_cls.primary_color
 
-        MDFloatingActionButton:
-            icon: "arrow-right-bold-circle-outline"
-            pos_hint:{"center_x":0.85 , "center_y":0.9}
-            md_bg_color: app.theme_cls.primary_color
-            on_release : app.make()
-
-        MDBottomAppBar:
-            MDToolbar:
-                right_action_items : [["plus", lambda x : root.open_dialog()]]
-                icon : 'play'
-                on_action_button : root.play_sound()
-
-
-<settingScreen>:
-    Screen:
         NavigationLayout:
             ScreenManager:
                 Screen:
@@ -96,12 +87,13 @@
                         MDBottomAppBar:
                             MDToolbar:
                                 left_action_items : [["menu", lambda x : nav_drawer.toggle_nav_drawer()]]
-                                elevation: 30
-                        Widget:
+                                right_action_items : [["plus", lambda x : root.open_dialog()]]
+                                icon : 'play'
+                                on_action_button : root.play_sound()
 
             MDNavigationDrawer:
                 id : nav_drawer
-                spacing : '8dp'
+                spacing : '15dp'
                 padding: '10dp'
 
                 BoxLayout:
@@ -111,32 +103,98 @@
                         source: 'profile.gif'
 
                     MDLabel:
-                        text: 'username'
+                        text: 
                         font_style: 'Subtitle1'
                         size_hint_y : None
-                        height: self.texture_size[1]
+                        height: '20dp'
                         theme_text_color: "Custom"
-                        text_color: 82/255, 255/255, 189/255, 1
+                        text_color: 51/255,196/255,153/255, 1
 
                     MDLabel:
                         text: 'username@gmail.com'
                         font_style: 'Caption'
                         size_hint_y : None
-                        height: self.texture_size[1]
+                        height: '20dp'
                         theme_text_color: "Custom"
-                        text_color:  82/255, 255/255, 189/255, 1
+                        text_color:  27/255, 125/255, 96/255, 1
 
                     ScrollView:
                         spacing:'20dp'
                         
                         MDList:
                             OneLineIconListItem:
-                                text : 'Upload'
+                                text : 'Edit Profile'
+                                on_press:
+                                    root.manager.transition.direction = 'left'
+                                    root.manager.current = 'setting'
                                 IconLeftWidget:
-                                    icon : 'circle'
+                                    icon : "account-edit-outline"
 
                             OneLineIconListItem:
-                                text : 'Upload'
+                                text : 'Logout'
+                                on_release :
+                                    root.manager.transition.direction = 'right'
+                                    root.manager.current = 'login'
                                 IconLeftWidget:
-                                    icon : 'circle'
+                                    icon : "logout"
 
+                    BoxLayout:
+                        orientation :'horizontal'
+                        spacing : '50dp'
+
+                        MDFillRoundFlatButton:
+                            text:"Dark Theme" 
+                            pos_hint:{'center_x': 0.8, 'center_y': 0.4} 
+                            on_release : app.change_dark()
+
+                        MDRoundFlatButton:
+                            text:"Light Theme" 
+                            pos_hint:{'center_x': 0.2, 'center_y': 0.4} 
+                            on_release : app.change_light()
+
+<settingScreen>:
+    Screen:
+
+        Image:
+            source: 'profile.gif'
+            pos_hint:{"center_x":0.5 , "center_y":0.9}
+
+
+        MDTextField:
+            pos_hint:{"center_x":0.5 , "center_y":0.5}
+            hint_text:"Enter New Username"
+            size_hint_x: None
+            width: 250
+            helper_text:"Minimum 5 Characters"
+            helper_text_mode: "on_focus"
+            icon_right: "pencil"
+            icon_right_color: app.theme_cls.primary_color
+
+        MDTextField:
+            pos_hint:{"center_x":0.5 , "center_y":0.3}
+            hint_text:"Enter New Password"
+            size_hint_x: None
+            width: 250
+            helper_text:"between 8-28 Years"
+            helper_text_mode: "on_focus"
+            icon_right: "pencil"
+            icon_right_color: app.theme_cls.primary_color
+
+        MDRoundFlatButton:
+            text:"Save Changes" 
+            pos_hint:{'center_x': 0.5, 'center_y': 0.1} 
+            on_release : Snackbar(text="Changes Saved").show()
+
+        MDFloatingActionButton:
+            icon: "arrow-left"
+            md_bg_color: app.theme_cls.primary_color
+            pos_hint:{'center_x': 0.1, 'center_y': 0.95} 
+            on_release : 
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'profile'
+
+
+
+        
+
+        
